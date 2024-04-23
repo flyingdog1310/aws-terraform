@@ -1,0 +1,8 @@
+# Terraform modules
+**/.terraform
+
+# Terraform plans
+**/.plan
+
+# Macbook file
+.DS_Store
