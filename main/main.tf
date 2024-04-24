@@ -11,7 +11,7 @@ terraform {
   backend "s3" {
     bucket               = "flyingdog-terraform-states"
     region               = "ap-northeast-1"
-    workspace_key_prefix = "terraform/stylish"
+    workspace_key_prefix = "terraform-state"
     key                  = "terraform.tfstate"
     dynamodb_table       = "flyingdog-terraform-locks"
   }
