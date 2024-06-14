@@ -12,3 +12,8 @@ variable "bastion_enabled" {
   type    = bool
   default = false
 }
+
+variable "vpn_enabled" {
+  type    = bool
+  default = false
+}
