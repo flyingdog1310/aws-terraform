@@ -1,5 +1,5 @@
-resource "aws_instance" "bastion" {
-  count         = var.bastion_enabled ? 1 : 0
+resource "aws_instance" "server_prompt" {
+  count         = var.server_prompt_enabled ? 1 : 0
   ami           = "ami-01bef798938b7644d"
   instance_type = "t3a.micro"
   subnet_id     = aws_default_subnet.ap-northeast-1a.id
@@ -11,17 +11,17 @@ resource "aws_instance" "bastion" {
     }
   }
   user_data            = file("${path.module}/src/server.sh")
-  security_groups      = [aws_security_group.bastion_sg[0].id]
+  security_groups      = [aws_security_group.server_prompt_sg[0].id]
   iam_instance_profile = aws_iam_instance_profile.dev-resources-iam-profile.name
 
   tags = {
-    Name = "bastion"
+    Name = "prompt-server"
     Env  = "general"
   }
 }
 
-resource "aws_security_group" "bastion_sg" {
-  count       = var.bastion_enabled ? 1 : 0
+resource "aws_security_group" "server_prompt_sg" {
+  count       = var.server_prompt_enabled ? 1 : 0
   name        = "allow_http"
   description = "Allow http inbound traffic"
   vpc_id      = aws_default_vpc.default.id
@@ -47,6 +47,6 @@ resource "aws_security_group" "bastion_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   tags = {
-    Name = "bastion-ec2-security-group"
+    Name = "prompt-server-ec2-security-group"
   }
 }

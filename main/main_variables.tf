@@ -8,6 +8,11 @@ variable "database_enabled" {
   default = false
 }
 
+variable "server_prompt_enabled" {
+  type    = bool
+  default = false
+}
+
 variable "bastion_enabled" {
   type    = bool
   default = false

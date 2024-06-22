@@ -1,13 +1,13 @@
 resource "aws_instance" "database" {
   count         = var.database_enabled ? 1 : 0
-  ami           = "ami-0eba6c58b7918d3a1"
+  ami           = "ami-01bef798938b7644d"
   instance_type = "t3a.micro"
   subnet_id     = aws_default_subnet.ap-northeast-1a.id
 
   instance_market_options {
     market_type = "spot"
     spot_options {
-      max_price = 0.004000
+      max_price = 0.005000
     }
   }
 
@@ -31,14 +31,14 @@ resource "aws_security_group" "ec2_sg" {
     from_port       = 6379
     to_port         = 6379
     protocol        = "tcp"
-    security_groups = [aws_security_group.bastion_sg[0].id]
+    security_groups = [aws_security_group.server_prompt_sg[0].id]
   }
 
   ingress {
     from_port       = 3306
     to_port         = 3306
     protocol        = "tcp"
-    security_groups = [aws_security_group.bastion_sg[0].id]
+    security_groups = [aws_security_group.server_prompt_sg[0].id]
   }
   egress {
     from_port   = 0
