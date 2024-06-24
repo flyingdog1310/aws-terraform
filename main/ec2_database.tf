@@ -15,6 +15,7 @@ resource "aws_instance" "database" {
   user_data            = file("${path.module}/src/database.sh")
   security_groups      = [aws_security_group.ec2_sg[0].id]
   iam_instance_profile = aws_iam_instance_profile.dev-resources-iam-profile.name
+  key_name             = data.aws_key_pair.aws_ec2.key_name
 
   tags = {
     Name = "database"
@@ -40,6 +41,12 @@ resource "aws_security_group" "ec2_sg" {
     to_port         = 3306
     protocol        = "tcp"
     security_groups = [aws_security_group.server_prompt_sg[0].id]
+  }
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
   egress {
     from_port   = 0
