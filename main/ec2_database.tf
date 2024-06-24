@@ -1,8 +1,9 @@
 resource "aws_instance" "database" {
-  count         = var.database_enabled ? 1 : 0
-  ami           = "ami-01bef798938b7644d"
-  instance_type = "t3a.micro"
-  subnet_id     = aws_default_subnet.ap-northeast-1a.id
+  count                       = var.database_enabled ? 1 : 0
+  ami                         = "ami-01bef798938b7644d"
+  instance_type               = "t3a.micro"
+  associate_public_ip_address = true
+  subnet_id                   = aws_default_subnet.ap-northeast-1a.id
 
   instance_market_options {
     market_type = "spot"
