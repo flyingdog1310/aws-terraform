@@ -4,13 +4,7 @@ resource "aws_instance" "server_prompt" {
   instance_type = "t3a.micro"
   subnet_id     = aws_default_subnet.ap-northeast-1a.id
 
-  instance_market_options {
-    market_type = "spot"
-    spot_options {
-      max_price = 0.005000
-    }
-  }
-  user_data            = file("${path.module}/src/server.sh")
+  user_data            = file("${path.module}/src/user_data/all_in_one.sh")
   security_groups      = [aws_security_group.server_prompt_sg[0].id]
   iam_instance_profile = aws_iam_instance_profile.dev-resources-iam-profile.name
   key_name             = data.aws_key_pair.aws_ec2.key_name
@@ -33,7 +27,6 @@ resource "aws_security_group" "server_prompt_sg" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
-
   ingress {
     from_port   = 80
     to_port     = 80

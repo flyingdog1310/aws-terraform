@@ -10,7 +10,7 @@ resource "aws_instance" "bastion" {
       max_price = 0.005000
     }
   }
-  user_data            = file("${path.module}/src/server.sh")
+  user_data            = file("${path.module}/src/user_data/server.sh")
   security_groups      = [aws_security_group.bastion_sg[0].id]
   iam_instance_profile = aws_iam_instance_profile.dev-resources-iam-profile.name
   key_name             = data.aws_key_pair.aws_ec2.key_name

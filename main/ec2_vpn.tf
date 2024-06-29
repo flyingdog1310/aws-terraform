@@ -10,7 +10,7 @@ resource "aws_instance" "vpn" {
       max_price = 0.004500
     }
   }
-  user_data            = file("${path.module}/src/vpn.sh")
+  user_data            = file("${path.module}/src/user_data/vpn.sh")
   security_groups      = [aws_security_group.vpn_sg[0].id]
   iam_instance_profile = aws_iam_instance_profile.dev-resources-iam-profile.name
   key_name             = data.aws_key_pair.aws_ec2.key_name

@@ -5,14 +5,14 @@ resource "aws_instance" "database" {
   associate_public_ip_address = true
   subnet_id                   = aws_default_subnet.ap-northeast-1a.id
 
-  instance_market_options {
-    market_type = "spot"
-    spot_options {
-      max_price = 0.005000
-    }
-  }
+  # instance_market_options {
+  #   market_type = "spot"
+  #   spot_options {
+  #     max_price = 0.005000
+  #   }
+  # }
 
-  user_data            = file("${path.module}/src/database.sh")
+  user_data            = file("${path.module}/src/user_data/database.sh")
   security_groups      = [aws_security_group.ec2_sg[0].id]
   iam_instance_profile = aws_iam_instance_profile.dev-resources-iam-profile.name
   key_name             = data.aws_key_pair.aws_ec2.key_name

@@ -39,7 +39,7 @@ resource "aws_ssm_document" "session_manager_prefs" {
     sessionType   = "Standard_Stream"
     inputs = {
       shellProfile = {
-        linux = file("${path.module}/src/linux_shell_profile.sh")
+        linux = file("${path.module}/src/shell_profile/linux_shell_profile.sh")
       }
     }
   })
