@@ -6,6 +6,8 @@ sudo apt-get update
 # Install MySQL
 sudo apt-get install mysql-server -y
 sudo systemctl start mysql.service
+sudo mysql -Bse \
+    "CREATE USER 'mysql'@'%' IDENTIFIED BY 'mysql'; GRANT ALL PRIVILEGES ON *.* To 'mysql'@'%' WITH GRANT OPTION; FLUSH PRIVILEGES;"
 
 # Install Redis
 sudo apt-get install redis -y
@@ -14,7 +16,8 @@ sudo apt-get install redis -y
 sudo apt-get install nginx -y 
 
 # Set up Nginx
-sudo tee /etc/nginx/sites-available/app <<EOF
+sudo rm /etc/nginx/sites-enabled/default
+sudo tee /etc/nginx/sites-available/default <<EOF
 server {
     listen 80;
     server_name _;
@@ -28,19 +31,17 @@ server {
     }
 }
 EOF
-
-sudo ln -s /etc/nginx/sites-available/app /etc/nginx/sites-enabled/app
 sudo systemctl restart nginx
 
 # Install Pipx
 sudo apt-get install pipx -y
-pipx ensurepath
-sudo pipx ensurepath --global
-pipx install poetry
-exec $SHELL
+/usr/bin/pipx ensurepath
+sudo /usr/bin/pipx ensurepath --global
+# TODO: findout why poetry is not installed in the virtual environment
+/usr/bin/pipx install poetry
 
 # Set up Poetry
-poetry config virtualenvs.in-project true
+/home/ubuntu/.local/bin/poetry config virtualenvs.in-project true
 
 # Set up service
 sudo tee /etc/systemd/system/app.service <<EOF
@@ -51,7 +52,7 @@ After=network.target multi-user.target
 [Service]
 User=ubuntu
 WorkingDirectory=/home/ubuntu/app
-ExecStart=~/app/.venv/bin/python3 main.py
+ExecStart=/home/ubuntu/app/.venv/bin/python3 /home/ubuntu/app/main.py
 Restart=always
 StandardOutput=syslog
 StandardError=syslog
@@ -62,5 +63,5 @@ WantedBy=multi-user.target
 EOF
 
 sudo systemctl daemon-reload
-sudo systemctl enable app
-sudo systemctl start app
+sudo systemctl enable app.service
+sudo systemctl start app.service
