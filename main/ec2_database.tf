@@ -1,6 +1,6 @@
 resource "aws_instance" "database" {
   count                       = var.database_enabled ? 1 : 0
-  ami                         = "ami-01bef798938b7644d"
+  ami                         = var.ubuntu_ami
   instance_type               = "t3a.micro"
   associate_public_ip_address = true
   subnet_id                   = aws_default_subnet.ap-northeast-1a.id
@@ -12,10 +12,10 @@ resource "aws_instance" "database" {
   #   }
   # }
 
-  user_data            = file("${path.module}/src/user_data/database.sh")
-  security_groups      = [aws_security_group.ec2_sg[0].id]
-  iam_instance_profile = aws_iam_instance_profile.dev-resources-iam-profile.name
-  key_name             = data.aws_key_pair.aws_ec2.key_name
+  user_data              = file("${path.module}/src/user_data/database.sh")
+  vpc_security_group_ids = [aws_security_group.ec2_sg[0].id]
+  iam_instance_profile   = aws_iam_instance_profile.dev-resources-iam-profile.name
+  key_name               = data.aws_key_pair.aws_ec2.key_name
 
   tags = {
     Name = "database"

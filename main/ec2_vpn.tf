@@ -1,6 +1,6 @@
 resource "aws_instance" "vpn" {
   count         = var.vpn_enabled ? 1 : 0
-  ami           = "ami-0eba6c58b7918d3a1"
+  ami           = var.ubuntu_ami
   instance_type = "t3a.micro"
   subnet_id     = aws_default_subnet.ap-northeast-1a.id
 
@@ -10,10 +10,10 @@ resource "aws_instance" "vpn" {
       max_price = 0.004500
     }
   }
-  user_data            = file("${path.module}/src/user_data/vpn.sh")
-  security_groups      = [aws_security_group.vpn_sg[0].id]
-  iam_instance_profile = aws_iam_instance_profile.dev-resources-iam-profile.name
-  key_name             = data.aws_key_pair.aws_ec2.key_name
+  user_data              = file("${path.module}/src/user_data/vpn.sh")
+  vpc_security_group_ids = [aws_security_group.vpn_sg[0].id]
+  iam_instance_profile   = aws_iam_instance_profile.dev-resources-iam-profile.name
+  key_name               = data.aws_key_pair.aws_ec2.key_name
 
   tags = {
     Name = "vpn"

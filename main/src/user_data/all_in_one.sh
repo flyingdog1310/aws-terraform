@@ -22,8 +22,16 @@ server {
     listen 80;
     server_name _;
 
+    location /api/ {
+        proxy_pass http://localhost:8000;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+    }
+
     location / {
-        proxy_pass http://localhost:8080;
+        proxy_pass http://localhost:3000;
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
@@ -33,35 +41,38 @@ server {
 EOF
 sudo systemctl restart nginx
 
-# Install Pipx
-sudo apt-get install pipx -y
-/usr/bin/pipx ensurepath
-sudo /usr/bin/pipx ensurepath --global
-# TODO: findout why poetry is not installed in the virtual environment
-/usr/bin/pipx install poetry
+# Install Docker
+sudo apt-get install docker.io -y
 
-# Set up Poetry
-/home/ubuntu/.local/bin/poetry config virtualenvs.in-project true
+# # Install Pipx
+# sudo apt-get install pipx -y
+# /usr/bin/pipx ensurepath
+# sudo /usr/bin/pipx ensurepath --global
+# # TODO: findout why poetry is not installed in the virtual environment
+# /usr/bin/pipx install poetry
 
-# Set up service
-sudo tee /etc/systemd/system/app.service <<EOF
-[Unit]
-Description=Python App
-After=network.target multi-user.target
+# # Set up Poetry
+# /home/ubuntu/.local/bin/poetry config virtualenvs.in-project true
 
-[Service]
-User=ubuntu
-WorkingDirectory=/home/ubuntu/app
-ExecStart=/home/ubuntu/app/.venv/bin/python3 /home/ubuntu/app/main.py
-Restart=always
-StandardOutput=syslog
-StandardError=syslog
-SyslogIdentifier=app
+# # Set up service
+# sudo tee /etc/systemd/system/app.service <<EOF
+# [Unit]
+# Description=Python App
+# After=network.target multi-user.target
 
-[Install]
-WantedBy=multi-user.target
-EOF
+# [Service]
+# User=ubuntu
+# WorkingDirectory=/home/ubuntu/app
+# ExecStart=/home/ubuntu/app/.venv/bin/python3 /home/ubuntu/app/main.py
+# Restart=always
+# StandardOutput=syslog
+# StandardError=syslog
+# SyslogIdentifier=app
 
-sudo systemctl daemon-reload
-sudo systemctl enable app.service
-sudo systemctl start app.service
+# [Install]
+# WantedBy=multi-user.target
+# EOF
+
+# sudo systemctl daemon-reload
+# sudo systemctl enable app.service
+# sudo systemctl start app.service
