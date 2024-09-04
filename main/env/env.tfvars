@@ -1,5 +1,5 @@
 project_name          = "general"
-server_prompt_enabled = true
+server_prompt_enabled = false
 database_enabled      = false
 bastion_enabled       = false
 vpn_enabled           = false
