@@ -12,7 +12,7 @@ data "aws_ami" "us_ubuntu" {
 
 resource "aws_instance" "us_vpn" {
   count         = var.us_vpn_enabled ? 1 : 0
-  provider      = "aws.us-east"
+  provider      = aws.us-east
   ami           = data.aws_ami.us_ubuntu.id
   instance_type = "t3a.micro"
   subnet_id     = aws_default_subnet.us-east-1a.id
@@ -26,7 +26,7 @@ resource "aws_instance" "us_vpn" {
   user_data              = file("${path.module}/src/user_data/vpn.sh")
   vpc_security_group_ids = [aws_security_group.us_vpn_sg[0].id]
   iam_instance_profile   = aws_iam_instance_profile.dev-resources-iam-profile.name
-  key_name               = data.aws_key_pair.aws_ec2.key_name
+  # key_name               = data.aws_key_pair.aws_ec2.key_name
 
   tags = {
     Name = "vpn"
@@ -36,7 +36,7 @@ resource "aws_instance" "us_vpn" {
 
 resource "aws_security_group" "us_vpn_sg" {
   count       = var.us_vpn_enabled ? 1 : 0
-  provider    = "aws.us-east"
+  provider    = aws.us-east
   name        = "allow_vpn_udp"
   description = "Allow http inbound traffic"
   vpc_id      = aws_default_vpc.default_us_east.id
