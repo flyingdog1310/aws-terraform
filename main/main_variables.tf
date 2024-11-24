@@ -23,6 +23,11 @@ variable "vpn_enabled" {
   default = false
 }
 
+variable "us_vpn_enabled" {
+  type    = bool
+  default = false
+}
+
 variable "ubuntu_ami" {
   type        = string
   description = "The AMI ID for the Ubuntu image"
